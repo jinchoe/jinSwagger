@@ -1,0 +1,162 @@
+---
+swagger: '2.0'
+info:
+  title: (tentative) binarySwitch Swagger with multi-responses
+  version: ocf.res.1.0.0
+schemes:
+ - coap
+ - coaps 
+consumes:
+ - application/vnd.ocf+cbor
+produces:
+ - application/vnd.ocf+cbor
+
+paths:
+  /binarySwitchResURI:
+    get:
+      description: GET 
+      responses:
+        200:
+          description: ''
+          schema:
+            "$ref": "#/definitions/BinarySwitch_a"
+    post:
+      description: POST 
+      parameters:
+       - $ref: "#/parameters/UpdatePayload"
+      responses:
+        204:
+          description: "successfully changed"
+
+  /binarySwitchResURI?if=ocf.if.a:
+    get:
+      description: GET with oic.if.a 
+      parameters:
+       -  $ref: "#/parameters/interface_a"
+      responses:
+        200:
+          description: ''
+          schema:
+           "$ref": "#/definitions/BinarySwitch_a"
+    post:
+      parameters:
+       - $ref: "#/parameters/interface_a"
+       - $ref: "#/parameters/UpdatePayload"
+      responses:
+        204:
+          description: "successfully changed"
+
+  /binarySwitchResURI?if=ocf.if.baseline:
+    get:
+      description: GET with oic.if.baseline 
+      parameters:
+       -  $ref: "#/parameters/interface_baseline"
+      responses:
+        200:
+          description: ''
+          schema:
+           "$ref": "#/definitions/BinarySwitch_baseline"
+
+parameters: 
+  UpdatePayload: 
+   name: value
+   in: body
+   required: true
+   schema:
+    "$ref": "#/definitions/BinarySwitch_a"
+  interface_a: 
+    name: if
+    in: query
+    required: true 
+    type: string
+    enum:
+     - oic.if.a
+  interface_baseline: 
+    name: if
+    in: query
+    required: true 
+    type: string
+    enum:
+     - oic.if.baseline
+
+definitions:
+  BinarySwitch_a:
+    type: object
+    required: 
+     - value
+    properties:
+      value:
+        type: boolean
+        description: Status of the switch
+      rt:
+        type: array
+        items:
+        - type: string
+          maxLength: 64
+        minItems: 1
+        description: Resource Type ID 
+        readOnly: true
+        default:
+        - oic.r.switch.binary
+      if:
+        type: array
+        description: The Interface set supported by the resource
+        readOnly: true
+        items:
+          type: string
+          enum:
+          - oic.if.baseline
+          - oic.if.a
+      p:
+        type: object
+        description: Bitmap indicating observable and discoverable
+        readOnly: true
+      n:
+        type: string
+        description: Friendly name of the resource
+        readOnly: true
+      id:
+        type: string
+        description: Instance ID of this specific resource
+        readOnly: true
+  BinarySwitch_baseline:
+    required: 
+     - rt
+     - if 
+     - value 
+    type: object
+    properties:
+      value:
+        type: boolean
+        description: Status of the switch
+      rt:
+        type: array
+        items:
+        - type: string
+          maxLength: 64
+        minItems: 1
+        description: Resource Type ID 
+        readOnly: true
+        default:
+        - oic.r.switch.binary
+      if:
+        type: array
+        description: The Interface set supported by the resource
+        readOnly: true
+        items:
+          type: string
+          enum:
+          - oic.if.baseline
+          - oic.if.a
+      p:
+        type: object
+        description: Bitmap indicating observable and discoverable
+        readOnly: true
+      n:
+        type: string
+        description: Friendly name of the resource
+        readOnly: true
+      id:
+        type: string
+        description: Instance ID of this specific resource
+        readOnly: true
